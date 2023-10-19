@@ -46,7 +46,7 @@ class VideoGenByRetrieval(MediaGeneratorBase):
         support multi query
         '''
         assert type(query) == list
-    
+
         # get query embed
         prompt = 'a picture without text'
         query = [ val + prompt for val in query]
@@ -57,10 +57,10 @@ class VideoGenByRetrieval(MediaGeneratorBase):
 
         # get meta 
         resp = []
-        for batch_idx,topk_ids in  enumerate(indices):
+        for batch_idx,topk_ids in enumerate(indices):
             # one_info = {}
             # one query topk urls
-            urls = self.meta_server.batch_get_meta(topk_ids) 
+            urls = self.meta_server.batch_get_meta(topk_ids)
             # logging.error('urls: {}'.format(urls))
             # download one of the topk videos
             for url_id,url in enumerate(urls):
@@ -68,8 +68,10 @@ class VideoGenByRetrieval(MediaGeneratorBase):
                     video_stream = download_video(url)
                     # try to open
                     url_md5 = self.get_url_md5(url)
-                    video_tmp_name = os.path.join(self.tmp_dir, "{}_{}_{}.mp4".format(batch_idx,url_id, url_md5))
-                    logger.info('tmp video name: {}'.format(video_tmp_name))
+                    video_tmp_name = os.path.join(
+                        self.tmp_dir, f"{batch_idx}_{url_id}_{url_md5}.mp4"
+                    )
+                    logger.info(f'tmp video name: {video_tmp_name}')
                     with open(video_tmp_name, "wb") as f:
                         f.write(video_stream.getbuffer())
                     one_info = {'url':url,'topk_ids':url_id,'video_local_path':video_tmp_name,'data_type':self.data_type}
@@ -78,7 +80,7 @@ class VideoGenByRetrieval(MediaGeneratorBase):
                 except Exception as e:
                     logger.error(e)
                     logger.error(traceback.format_exc())
-                    
+
                     continue
         return resp
     

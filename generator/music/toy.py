@@ -10,8 +10,6 @@ class ToyBgmGenerator(object):
     
     def run(self,):
         local_file = random.choice(self.bgms)
-        resp = {
-            'bgm_local_file':local_file,
-
+        return {
+            'bgm_local_file': local_file,
         }
-        return resp

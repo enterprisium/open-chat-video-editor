@@ -11,10 +11,9 @@ class TTSGenerator(MediaGeneratorBase):
             os.makedirs(self.tmp_dir)
     def run_tts(self,text):
         
-        out_path = os.path.join(self.tmp_dir,self.get_str_md5(text)+'.wav')
+        out_path = os.path.join(self.tmp_dir, f'{self.get_str_md5(text)}.wav')
         self.tts_model.run_tts(text,out_path)
-        resp = {'audio_path':out_path}
-        return resp 
+        return {'audio_path':out_path} 
     
     def batch_run(self,text_list):
         '''
@@ -22,9 +21,6 @@ class TTSGenerator(MediaGeneratorBase):
         return:[{'audio_path':audio_path1},{'audio_path':audio_path2},...]
         '''
         assert type(text_list) == list
-        resp = []
-        for text in text_list:
-            resp.append(self.run_tts(text))
-        return resp
+        return [self.run_tts(text) for text in text_list]
             
         

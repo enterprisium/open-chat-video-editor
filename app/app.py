@@ -13,8 +13,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='config for open chat editor')
     parser.add_argument('--cfg', type=str, required=True,help='input cfg file path')
     parser.add_argument('--func', type=str,default='Text2VideoEditor',help='editor function name')
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 if __name__ == "__main__":
     args = get_args()
     cfg_path = args.cfg

@@ -9,7 +9,7 @@ class PaddleSpeechTTS(object):
         self.tts = TTSExecutor()
         self.am = am
         self.lang = lang
-        logger.info('building PaddleSpeechTTS, am: {}, lang: {}'.format(am,lang))
+        logger.info(f'building PaddleSpeechTTS, am: {am}, lang: {lang}')
         
     
     def run_tts(self,text,out_path):

@@ -9,14 +9,14 @@ class VideoFiassKnnServer(object):
                  ):
         # loading faiss index
         # self.top_k = 10
-        self.nprobe = 2048 
+        self.nprobe = 2048
         self.index_path = index_path
-        
+
         self.index = faiss.read_index(index_path)
         if isinstance(self.index,faiss.swigfaiss.IndexPreTransform):
             faiss.ParameterSpace().set_index_parameter(self.index, "nprobe", self.nprobe)
         else:
-            logging.info('set nprobe: {}'.format(self.nprobe))
+            logging.info(f'set nprobe: {self.nprobe}')
             self.index.nprobe = self.nprobe
 
         

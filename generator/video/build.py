@@ -6,22 +6,20 @@ from comm.mylog import logger
 def build_video_generator(cfg):
     video_generator = None
     visual_gen_type = cfg.video_editor.visual_gen.type
-    logger.info('visual_gen_type: {}'.format(visual_gen_type))
-    if visual_gen_type == "video_by_retrieval":
-        logger.info('start build_QueryTextEmbedServer')
-        query_model = build_QueryTextVideoEmbedServer(cfg)
-        
-        # build faiss index 
-        logger.info('start build_VideoFiassKnnServer')
-        index_server = build_VideoFiassKnnServer(cfg)
-        
-        # build meta server 
-        logger.info('start build_VideoMetaServer')
-          
-        meta_server = VideoMetaServer(cfg.video_editor.visual_gen.video_by_retrieval.meta_path)
-        
-        video_generator = VideoGenByRetrieval(cfg,query_model,index_server,meta_server)
-    else:
-        raise ValueError('visual_gen_type: {} not support'.format(visual_gen_type))
-    
-    return video_generator
+    logger.info(f'visual_gen_type: {visual_gen_type}')
+    if visual_gen_type != "video_by_retrieval":
+        raise ValueError(f'visual_gen_type: {visual_gen_type} not support')
+
+    logger.info('start build_QueryTextEmbedServer')
+    query_model = build_QueryTextVideoEmbedServer(cfg)
+
+    # build faiss index 
+    logger.info('start build_VideoFiassKnnServer')
+    index_server = build_VideoFiassKnnServer(cfg)
+
+    # build meta server 
+    logger.info('start build_VideoMetaServer')
+
+    meta_server = VideoMetaServer(cfg.video_editor.visual_gen.video_by_retrieval.meta_path)
+
+    return VideoGenByRetrieval(cfg,query_model,index_server,meta_server)

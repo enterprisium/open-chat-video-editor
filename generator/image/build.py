@@ -13,20 +13,20 @@ def build_image_generator(cfg):
     '''
     image_generator = None
     visual_gen_type = cfg.video_editor.visual_gen.type
-    logger.info('visual_gen_type: {}'.format(visual_gen_type))
+    logger.info(f'visual_gen_type: {visual_gen_type}')
     if visual_gen_type == "image_by_retrieval":
         logger.info('start build_QueryTextEmbedServer')
         query_model = build_QueryTextEmbedServer(cfg)
-        
+
         # build faiss index 
         logger.info('start build_FiassKnnServer')
         index_server = build_FiassKnnServer(cfg)
 
         # build meta server 
         logger.info('start build_ImgMetaServer')    
-        
+
         meta_server = ImgMetaServer(cfg.video_editor.visual_gen.image_by_retrieval.meta_path)
-    
+
         image_generator = ImageGenbyRetrieval(cfg,query_model,index_server,meta_server)
     elif visual_gen_type == "image_by_diffusion":
         logger.info("start build_img_gen_model")
@@ -36,19 +36,19 @@ def build_image_generator(cfg):
         # build img retrieval generator
         logger.info('start build_QueryTextEmbedServer')
         query_model = build_QueryTextEmbedServer(cfg)
-        
+
         # build faiss index 
         logger.info('start build_FiassKnnServer')
         index_server = build_FiassKnnServer(cfg)
 
         # build meta server 
         logger.info('start build_ImgMetaServer')    
-        
+
         meta_server = ImgMetaServer(cfg.video_editor.visual_gen.image_by_retrieval.meta_path)
-    
+
         image_retrieval_generator = ImageGenbyRetrieval(cfg,query_model,index_server,meta_server)
         img2img_model = build_img2img_gen_model(cfg)
         image_generator = ImageGenByRetrievalThenDiffusion(cfg,image_retrieval_generator,img2img_model)
     else:
-        raise ValueError('visual_gen_type: {} not support'.format(visual_gen_type))
+        raise ValueError(f'visual_gen_type: {visual_gen_type} not support')
     return image_generator

@@ -54,16 +54,16 @@ class ImageGenbyRetrieval(MediaGeneratorBase):
         query = [ val + prompt for val in query]
         # get query embed
         query_embed = self.query_embed_server.get_query_embed(query)
-        
+
         # knn search, indices: [batch_size, top_k]
         distances, indices = self.index_server.search(query_embed)
 
         # get meta 
         resp = []
-        for batch_idx,topk_ids in  enumerate(indices):
+        for batch_idx,topk_ids in enumerate(indices):
             # one_info = {}
             # one query topk urls
-            urls = self.meta_server.batch_get_meta(topk_ids) 
+            urls = self.meta_server.batch_get_meta(topk_ids)
             # logging.error('urls: {}'.format(urls))
             # download one of the topk images
             for url_id,url in enumerate(urls):
@@ -72,22 +72,24 @@ class ImageGenbyRetrieval(MediaGeneratorBase):
                     img_stream = download_image(url)
                     # try to open
                     url_md5 = self.get_url_md5(url)
-                    img_tmp_name = os.path.join(self.tmp_dir, "{}_{}_{}.jpg".format(batch_idx,url_id, url_md5))
-                    logger.info('tmp img name: {}'.format(img_tmp_name))
+                    img_tmp_name = os.path.join(
+                        self.tmp_dir, f"{batch_idx}_{url_id}_{url_md5}.jpg"
+                    )
+                    logger.info(f'tmp img name: {img_tmp_name}')
                     img = Image.open(img_stream).convert('RGB')
                     img.save(img_tmp_name)
                     one_info = {'url':url,'topk_ids':url_id,'img_local_path':img_tmp_name,'data_type':self.data_type}
                     resp.append(one_info)
                     break
-                
+
                 except Exception as e:
                     logger.error(e)
                     logger.error(traceback.format_exc())
-                    
+
                     continue
-        
-                
-    
+
+
+
         return resp
     
     
@@ -115,7 +117,7 @@ class ImageGenByDiffusion(MediaGeneratorBase):
         for idx,text in enumerate(query):
             img = self.img_gen_model.run(text)
             pil_md5 = self.get_pil_md5(img)
-            img_tmp_name = os.path.join(self.tmp_dir, "{}_{}.jpg".format(idx,pil_md5))
+            img_tmp_name = os.path.join(self.tmp_dir, f"{idx}_{pil_md5}.jpg")
             img.save(img_tmp_name)
             one_info = {'img_local_path':img_tmp_name,'data_type':self.data_type}
             resp.append(one_info)

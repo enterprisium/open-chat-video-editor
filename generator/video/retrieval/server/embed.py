@@ -14,9 +14,6 @@ class QueryTextEmbedServer(object):
         query: str
         support batch
         '''
-        query_features = self.model.get_text_embed(query)
- 
-
-        return query_features
+        return self.model.get_text_embed(query)
     
     
